@@ -113,6 +113,60 @@ def regex_replace(entries: list[FileEntry], pattern: str, replacement: str) -> R
     return RenamePlan(actions=actions)
 
 
+def strip_text(
+    entries: list[FileEntry],
+    text: str,
+    *,
+    position: str = "any",
+    case_sensitive: bool = True,
+) -> RenamePlan:
+    """Create a plan that strips text from filenames.
+
+    A convenience wrapper around pattern-based removal, targeting common cases
+    like stripping prefixes (``Screenshot_``), suffixes (``_edited``), or any
+    occurrence of a substring.
+
+    Args:
+        entries: Files to rename.
+        text: Text to remove.
+        position: Where to match — ``"prefix"`` (start of name),
+            ``"suffix"`` (end of stem, before extension), or ``"any"``
+            (all occurrences anywhere in the name).  Default ``"any"``.
+        case_sensitive: Whether the match is case-sensitive (default True).
+    """
+    flags = 0 if case_sensitive else re.IGNORECASE
+
+    actions = []
+    for entry in entries:
+        if entry.is_dir:
+            continue
+
+        name = entry.name
+
+        if position == "prefix":
+            # Strip from start of filename
+            pattern = re.compile(r"^" + re.escape(text), flags)
+            new_name = pattern.sub("", name, count=1)
+        elif position == "suffix":
+            # Strip from end of stem (before extension)
+            stem = entry.path.stem
+            ext = entry.suffix
+            pattern = re.compile(re.escape(text) + r"$", flags)
+            new_stem = pattern.sub("", stem, count=1)
+            new_name = new_stem + ext
+        else:
+            # Strip all occurrences anywhere in filename
+            pattern = re.compile(re.escape(text), flags)
+            new_name = pattern.sub("", name)
+
+        if new_name != name and new_name:
+            actions.append(
+                RenameAction(source=entry.path, destination=entry.path.parent / new_name)
+            )
+
+    return RenamePlan(actions=actions)
+
+
 def sequential_name(
     entries: list[FileEntry],
     template: str = "{counter}{ext}",

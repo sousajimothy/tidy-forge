@@ -15,6 +15,7 @@ from tidyforge.rename_engine import (
     build_plan_from_template,
     regex_replace,
     replace_text,
+    strip_text,
 )
 from tidyforge.ui_common import print_error, print_header, print_table, print_warning
 
@@ -171,6 +172,60 @@ def regex_cmd(
     plan = regex_replace(entries, pattern, replacement)
 
     print_header(f"Regex: /{pattern}/ -> '{replacement}'")
+    _show_plan(plan, directory)
+
+    if execute:
+        manifest = plan.execute(dry_run=False)
+        typer.echo(manifest.summary)
+    else:
+        typer.echo("\nDry-run mode. Use --execute to apply.")
+
+
+@app.command(name="strip")
+def strip_cmd(
+    directory: Annotated[Path, typer.Argument(help="Directory containing files")],
+    text: Annotated[str, typer.Option(help="Text to remove from filenames")],
+    position: Annotated[
+        str,
+        typer.Option(
+            help=(
+                "Where to strip: 'prefix' (start of name),"
+                " 'suffix' (end of stem), 'any' (all occurrences)"
+            ),
+        ),
+    ] = "any",
+    ignore_case: Annotated[
+        bool,
+        typer.Option("--ignore-case", "-i", help="Case-insensitive matching"),
+    ] = False,
+    execute: Annotated[
+        bool, typer.Option("--execute", help="Actually rename")
+    ] = False,
+) -> None:
+    """Strip text from filenames (prefix, suffix, or anywhere)."""
+    setup_logging()
+    directory = directory.resolve()
+
+    if not directory.is_dir():
+        print_error(f"Not a directory: {directory}")
+        raise typer.Exit(1)
+
+    if position not in ("prefix", "suffix", "any"):
+        print_error(
+            f"Invalid position '{position}'."
+            " Use 'prefix', 'suffix', or 'any'."
+        )
+        raise typer.Exit(1)
+
+    entries = list(scan_directory(directory, max_depth=0))
+    plan = strip_text(
+        entries, text, position=position, case_sensitive=not ignore_case,
+    )
+
+    label = f"Strip {position}: '{text}'"
+    if ignore_case:
+        label += " (case-insensitive)"
+    print_header(label)
     _show_plan(plan, directory)
 
     if execute:
