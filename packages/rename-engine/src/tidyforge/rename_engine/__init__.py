@@ -7,6 +7,7 @@ from tidyforge.rename_engine.operations import (
     replace_text,
     sanitize_filename,
     sequential_name,
+    strip_text,
 )
 from tidyforge.rename_engine.plan import RenameAction, RenamePlan
 from tidyforge.rename_engine.templates import TemplateRenderer, build_plan_from_template
@@ -22,4 +23,5 @@ __all__ = [
     "replace_text",
     "sanitize_filename",
     "sequential_name",
+    "strip_text",
 ]

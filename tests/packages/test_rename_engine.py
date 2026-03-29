@@ -16,6 +16,7 @@ from tidyforge.rename_engine import (
     replace_text,
     sanitize_filename,
     sequential_name,
+    strip_text,
 )
 
 
@@ -168,3 +169,58 @@ class TestSanitizeFilename:
 
     def test_empty_becomes_unnamed(self) -> None:
         assert sanitize_filename("...") == "unnamed"
+
+
+class TestStripText:
+    def test_strip_prefix(self, tmp_path: Path) -> None:
+        entries = [_make_entry(tmp_path, "Screenshot_20260329_094302_Reddit.png")]
+        plan = strip_text(entries, "Screenshot_", position="prefix")
+        assert plan.actions[0].destination.name == "20260329_094302_Reddit.png"
+
+    def test_strip_prefix_no_match(self, tmp_path: Path) -> None:
+        entries = [_make_entry(tmp_path, "IMG_001.jpg")]
+        plan = strip_text(entries, "Screenshot_", position="prefix")
+        assert len(plan.actions) == 0
+
+    def test_strip_suffix(self, tmp_path: Path) -> None:
+        entries = [_make_entry(tmp_path, "photo_edited.jpg")]
+        plan = strip_text(entries, "_edited", position="suffix")
+        assert plan.actions[0].destination.name == "photo.jpg"
+
+    def test_strip_suffix_no_match(self, tmp_path: Path) -> None:
+        entries = [_make_entry(tmp_path, "photo.jpg")]
+        plan = strip_text(entries, "_edited", position="suffix")
+        assert len(plan.actions) == 0
+
+    def test_strip_any(self, tmp_path: Path) -> None:
+        entries = [_make_entry(tmp_path, "IMG-20260329-photo.jpg")]
+        plan = strip_text(entries, "IMG-", position="any")
+        assert plan.actions[0].destination.name == "20260329-photo.jpg"
+
+    def test_strip_any_multiple(self, tmp_path: Path) -> None:
+        entries = [_make_entry(tmp_path, "aa_bb_aa.txt")]
+        plan = strip_text(entries, "aa", position="any")
+        assert plan.actions[0].destination.name == "_bb_.txt"
+
+    def test_strip_case_insensitive(self, tmp_path: Path) -> None:
+        entries = [_make_entry(tmp_path, "SCREENSHOT_001.png")]
+        plan = strip_text(entries, "screenshot_", position="prefix", case_sensitive=False)
+        assert plan.actions[0].destination.name == "001.png"
+
+    def test_strip_case_sensitive_no_match(self, tmp_path: Path) -> None:
+        entries = [_make_entry(tmp_path, "SCREENSHOT_001.png")]
+        plan = strip_text(entries, "screenshot_", position="prefix", case_sensitive=True)
+        assert len(plan.actions) == 0
+
+    def test_strip_skips_dirs(self, tmp_path: Path) -> None:
+        d = tmp_path / "Screenshot_subdir"
+        d.mkdir()
+        entry = FileEntry.from_path(d)
+        plan = strip_text([entry], "Screenshot_", position="prefix")
+        assert len(plan.actions) == 0
+
+    def test_strip_skips_empty_result(self, tmp_path: Path) -> None:
+        """Stripping the entire filename should not produce a rename."""
+        entries = [_make_entry(tmp_path, "abc.txt")]
+        plan = strip_text(entries, "abc.txt", position="any")
+        assert len(plan.actions) == 0
