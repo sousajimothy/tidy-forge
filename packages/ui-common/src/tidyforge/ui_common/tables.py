@@ -74,6 +74,6 @@ def print_file_table(
         )
 
     if len(entries) > max_rows:
-        table.add_row(f"... and {len(entries) - max_rows} more", "", "", "")
+        table.add_row(f"... and {len(entries) - max_rows:,} more", "", "", "")
 
     console.print(table)

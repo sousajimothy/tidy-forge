@@ -86,8 +86,8 @@ class ActionManifest(BaseModel):
         """One-line summary: counts of successes and failures."""
         mode = "DRY RUN" if self.dry_run else "EXECUTED"
         return (
-            f"[{mode}] {len(self.operations)} operations: "
-            f"{self.success_count} succeeded, {self.failure_count} failed"
+            f"[{mode}] {len(self.operations):,} operations: "
+            f"{self.success_count:,} succeeded, {self.failure_count:,} failed"
         )
 
     def to_json(self, path: Path) -> None:

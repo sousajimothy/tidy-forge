@@ -15,6 +15,7 @@ dependencies = [
     "tidyforge-duplicate-detection",
     "tidyforge-ui-common",
     "typer>=0.12",
+    "tqdm>=4.66",
 ]
 
 [project.scripts]

@@ -37,7 +37,7 @@ class RenamePlan(BaseModel):
             dest_counts[dest] = dest_counts.get(dest, 0) + 1
 
         return [
-            f"Collision: {count} files target '{dest}'"
+            f"Collision: {count:,} files target '{dest}'"
             for dest, count in dest_counts.items()
             if count > 1
         ]

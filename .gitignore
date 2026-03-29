@@ -37,6 +37,9 @@ htmlcov/
 data/tmp/*
 !data/tmp/.gitkeep
 
+# Jupyter
+.ipynb_checkpoints/
+
 # OS
 Thumbs.db
 Desktop.ini

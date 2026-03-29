@@ -39,7 +39,7 @@ def _show_plan(plan, directory: Path) -> None:
 
     rows = [[old, new] for old, new in preview]
     print_table(
-        f"{len(preview)} renames planned",
+        f"{len(preview):,} renames planned",
         ["Current Name", "New Name"],
         rows,
     )
