@@ -89,3 +89,45 @@ class CompositeFilter:
         if self.mode == "or":
             return any(f(entry) for f in self.filters)
         return all(f(entry) for f in self.filters)
+
+
+@dataclass
+class NameLengthFilter:
+    """Filter files by stem (filename without extension) length.
+
+    Args:
+        min_length: Minimum stem length (inclusive). None means no minimum.
+        max_length: Maximum stem length (inclusive). None means no maximum.
+    """
+
+    min_length: int | None = None
+    max_length: int | None = None
+
+    def __call__(self, entry: FileEntry) -> bool:
+        stem_len = len(entry.path.stem) if hasattr(entry, "path") else len(entry.name)
+        if self.min_length is not None and stem_len < self.min_length:
+            return False
+        return not (self.max_length is not None and stem_len > self.max_length)
+
+
+@dataclass
+class HiddenFileFilter:
+    """Filter out hidden files.
+
+    On POSIX systems, hidden files start with a dot. On Windows, the
+    ``is_hidden`` key in ``entry.metadata`` is checked (populated by
+    :func:`~tidyforge.metadata.fs_metadata.extract_fs_metadata`).
+
+    Args:
+        include_hidden: If True, hidden files are *not* filtered out.
+    """
+
+    include_hidden: bool = False
+
+    def __call__(self, entry: FileEntry) -> bool:
+        if self.include_hidden:
+            return True
+        # Check metadata first (Windows), fall back to dot-prefix (POSIX)
+        if entry.metadata.get("is_hidden"):
+            return False
+        return not entry.name.startswith(".")

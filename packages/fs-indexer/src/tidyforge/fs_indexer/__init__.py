@@ -10,6 +10,8 @@ from tidyforge.fs_indexer.aggregator import (
 from tidyforge.fs_indexer.filters import (
     CompositeFilter,
     ExtensionFilter,
+    HiddenFileFilter,
+    NameLengthFilter,
     PatternFilter,
     SizeFilter,
 )
@@ -20,6 +22,8 @@ __all__ = [
     "DirStats",
     "ExtensionFilter",
     "ExtensionStats",
+    "HiddenFileFilter",
+    "NameLengthFilter",
     "PatternFilter",
     "SizeFilter",
     "aggregate_by_directory",
