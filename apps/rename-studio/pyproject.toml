@@ -1,0 +1,28 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "tidyforge-rename-studio"
+version = "0.1.0"
+description = "Batch rename files with templates, regex, and collision detection"
+requires-python = ">=3.11"
+dependencies = [
+    "tidyforge-core",
+    "tidyforge-fs-indexer",
+    "tidyforge-rename-engine",
+    "tidyforge-ui-common",
+    "typer>=0.12",
+]
+
+[project.scripts]
+rename-studio = "rename_studio.cli:app"
+
+[tool.uv.sources]
+tidyforge-core = { workspace = true }
+tidyforge-fs-indexer = { workspace = true }
+tidyforge-rename-engine = { workspace = true }
+tidyforge-ui-common = { workspace = true }
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/rename_studio"]

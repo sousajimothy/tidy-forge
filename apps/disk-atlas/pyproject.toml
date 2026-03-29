@@ -1,0 +1,26 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "tidyforge-disk-atlas"
+version = "0.1.0"
+description = "Analyse disk usage - largest files, folders, and file type distribution"
+requires-python = ">=3.11"
+dependencies = [
+    "tidyforge-core",
+    "tidyforge-fs-indexer",
+    "tidyforge-ui-common",
+    "typer>=0.12",
+]
+
+[project.scripts]
+disk-atlas = "disk_atlas.cli:app"
+
+[tool.uv.sources]
+tidyforge-core = { workspace = true }
+tidyforge-fs-indexer = { workspace = true }
+tidyforge-ui-common = { workspace = true }
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/disk_atlas"]

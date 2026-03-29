@@ -1,0 +1,32 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "tidyforge-media-curator"
+version = "0.1.0"
+description = "Organise photos and videos by metadata, dates, and folder structure"
+requires-python = ">=3.11"
+dependencies = [
+    "tidyforge-core",
+    "tidyforge-fs-indexer",
+    "tidyforge-metadata",
+    "tidyforge-media-grouping",
+    "tidyforge-duplicate-detection",
+    "tidyforge-ui-common",
+    "typer>=0.12",
+]
+
+[project.scripts]
+media-curator = "media_curator.cli:app"
+
+[tool.uv.sources]
+tidyforge-core = { workspace = true }
+tidyforge-fs-indexer = { workspace = true }
+tidyforge-metadata = { workspace = true }
+tidyforge-media-grouping = { workspace = true }
+tidyforge-duplicate-detection = { workspace = true }
+tidyforge-ui-common = { workspace = true }
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/media_curator"]

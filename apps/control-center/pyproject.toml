@@ -1,0 +1,26 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "tidyforge-control-center"
+version = "0.1.0"
+description = "Unified launcher for all TidyForge tools"
+requires-python = ">=3.11"
+dependencies = [
+    "tidyforge-media-curator",
+    "tidyforge-disk-atlas",
+    "tidyforge-rename-studio",
+    "typer>=0.12",
+]
+
+[project.scripts]
+tidyforge = "control_center.cli:app"
+
+[tool.uv.sources]
+tidyforge-media-curator = { workspace = true }
+tidyforge-disk-atlas = { workspace = true }
+tidyforge-rename-studio = { workspace = true }
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/control_center"]

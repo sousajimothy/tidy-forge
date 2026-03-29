@@ -1,0 +1,19 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "tidyforge-ui-common"
+version = "0.1.0"
+description = "Shared console output and formatting helpers for TidyForge"
+requires-python = ">=3.11"
+dependencies = [
+    "tidyforge-core",
+    "rich>=13.0",
+]
+
+[tool.uv.sources]
+tidyforge-core = { workspace = true }
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/tidyforge"]

@@ -1,0 +1,33 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir -p packages/core/src/tidyforge/core)",
+      "Bash(mkdir -p packages/fs-indexer/src/tidyforge/fs_indexer)",
+      "Bash(mkdir -p packages/metadata/src/tidyforge/metadata)",
+      "Bash(mkdir -p packages/media-grouping/src/tidyforge/media_grouping)",
+      "Bash(mkdir -p packages/duplicate-detection/src/tidyforge/duplicate_detection)",
+      "Bash(pip install:*)",
+      "Bash(uv sync:*)",
+      "Bash(pip show:*)",
+      "Bash(python -m uv --version)",
+      "Bash(python -m uv sync)",
+      "Bash(python -m uv run python -c \"from tidyforge.core import FileEntry; print\\(''core OK''\\)\")",
+      "Bash(python -m uv run python -c \"from tidyforge.fs_indexer import scan_directory; print\\(''fs-indexer OK''\\)\")",
+      "Bash(python -m uv run python -c \"from tidyforge.metadata import categorize_file; print\\(''metadata OK''\\)\")",
+      "Bash(python -m uv run python -c \"from tidyforge.rename_engine import RenamePlan; print\\(''rename-engine OK''\\)\")",
+      "Bash(python -m uv run media-curator --help)",
+      "Bash(python -m uv run disk-atlas --help)",
+      "Bash(python -m uv run rename-studio --help)",
+      "Bash(python -m uv run tidyforge --help)",
+      "Bash(python -m uv run pytest -v)",
+      "Bash(python -m uv run pytest -q)",
+      "Bash(python -m uv run ruff check .)",
+      "Bash(python -m uv run ruff check --fix .)",
+      "Bash(python -m uv run ruff format .)",
+      "Bash(python -m uv run disk-atlas scan data/fixtures/sample_tree)",
+      "Bash(python -m uv run media-curator scan data/fixtures/sample_tree --all)",
+      "Bash(python -m uv run rename-studio preview data/fixtures/sample_tree/photos --template \"{date}_{name}{ext}\")",
+      "Bash(python -m uv run tidyforge disk scan data/fixtures/sample_tree --top 3)"
+    ]
+  }
+}
