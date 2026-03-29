@@ -48,7 +48,7 @@ def scan(
     total_count = len(entries)
 
     print_header(f"Disk Usage: {directory.name}")
-    typer.echo(f"Total: {total_count} files, {format_size(total_size)}\n")
+    typer.echo(f"Total: {total_count:,} files, {format_size(total_size)}\n")
 
     # Largest files
     largest = top_n(entries, n=top, key="size")
@@ -65,7 +65,7 @@ def scan(
     # Extension distribution
     ext_stats = aggregate_by_extension(entries)
     ext_sorted = sorted(ext_stats.values(), key=lambda s: s.total_size, reverse=True)
-    rows = [[s.extension, str(s.count), format_size(s.total_size)] for s in ext_sorted[:top]]
+    rows = [[s.extension, f"{s.count:,}", format_size(s.total_size)] for s in ext_sorted[:top]]
     print_table("File Type Distribution", ["Extension", "Count", "Total Size"], rows)
 
     # Largest directories
@@ -74,7 +74,7 @@ def scan(
     rows = []
     for ds in dir_sorted[:top]:
         rel = ds.path.relative_to(directory) if ds.path.is_relative_to(directory) else ds.path
-        rows.append([str(rel), str(ds.file_count), format_size(ds.total_size)])
+        rows.append([str(rel), f"{ds.file_count:,}", format_size(ds.total_size)])
     print_table(f"Top {top} Largest Directories", ["Directory", "Files", "Size"], rows)
 
 
